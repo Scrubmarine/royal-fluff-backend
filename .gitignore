@@ -1,1 +1,9 @@
-royal-fluff-venv/
+venv/
+
+# Python cache files
+__pycache__/
+
+# Other standard ignores
+*.pyc
+*.pyo
+*.pyd
