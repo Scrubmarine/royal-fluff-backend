@@ -1,0 +1,54 @@
+name: Deploy to Beanstalk
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Install EB CLI
+      run: |
+        pip install awsebcli
+
+    - name: Check AWS CLI version
+      run: aws --version
+
+    - name: Configure AWS CLI
+      run: |
+        aws configure set region ${{ secrets.AWS_REGION }} 
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Deploy to Elastic Beanstalk
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        APPLICATION_NAME: 'royal-fluff-backend'
+        ENVIRONMENT_NAME: 'Royal-fluff-backend-env-1'
+      run: |
+        # Initialize Elastic Beanstalk (non-interactive)
+        eb init $APPLICATION_NAME \
+          --region $AWS_REGION \
+          --platform "Python" \
+          --no-verify-ssl  
+        eb use $ENVIRONMENT_NAME
+        eb deploy
+#test
