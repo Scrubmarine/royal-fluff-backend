@@ -1,6 +1,10 @@
 name: Grooming API Workflow
 
-on: [push]
+on:
+  push:
+    branches:
+      - working
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -18,6 +22,7 @@ jobs:
     env:
           DATABASE_URL: postgres://test_admin:testpassword@localhost:5432/test_grooming_db
           DJANGO_SETTINGS_MODULE: api.settings_test
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
 
     steps:
       - name: Check out code
