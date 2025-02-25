@@ -1,6 +1,10 @@
 name: Grooming API Workflow
 
-on: [push]
+on:
+  push:
+    branches:
+      - working
+
 jobs:
   test:
     runs-on: ubuntu-latest
