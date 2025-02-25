@@ -1,0 +1,39 @@
+name: Grooming API Workflow
+
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test_admin
+          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: test_grooming_db
+        ports:
+          - 5432:5432
+
+    env:
+          DATABASE_URL: postgres://test_admin:testpassword@localhost:5432/test_grooming_db
+          DJANGO_SETTINGS_MODULE: api.settings_test
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run migrations
+        run: python manage.py migrate
+
+      - name: Run tests
+        run: python manage.py test
