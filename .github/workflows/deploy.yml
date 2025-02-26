@@ -55,11 +55,13 @@ jobs:
     - name: Set Environment Variables in Beanstalk
       env:
         DB_NAME: ${{ secrets.DB_NAME }}
+        DB_HOST: ${{ secrets.DB_HOST }}
         DB_USERNAME: ${{ secrets.DB_USERNAME }}
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
       run: |
         eb setenv DJANGO_ENV=production \
+                  DB_HOST="$DB_HOST" \
                   DB_NAME="$DB_NAME" \
                   DB_USERNAME="$DB_USERNAME" \
                   DB_PASSWORD="$DB_PASSWORD" \
