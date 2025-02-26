@@ -45,6 +45,10 @@ jobs:
           --no-verify-ssl  
         eb use $ENVIRONMENT_NAME
         eb deploy
+    - name: Run Migrations
+      run: |
+        eb ssh $ENVIRONMENT_NAME --command "source /var/app/venv/*/bin/activate && python /var/app/current/manage.py migrate"
+
 
     - name: Set Environment Variables in Beanstalk
       env:
