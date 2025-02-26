@@ -35,9 +35,10 @@ jobs:
     - name: Set up SSH for EC2
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.EB_SSH }}" > ~/.ssh/id_rsa
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -t rsa your-ec2-public-ip >> ~/.ssh/known_hosts
+        # Replace <EC2-PUBLIC-IP> with the actual public IP of your EC2 instance
+        ssh-keyscan -t rsa 172.31.17.167 >> ~/.ssh/known_hosts
 
     - name: Deploy to Elastic Beanstalk
       env:
