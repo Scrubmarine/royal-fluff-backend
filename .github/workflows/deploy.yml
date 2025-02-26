@@ -32,13 +32,6 @@ jobs:
         aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    - name: Set up SSH for EC2
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.EB_SSH }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -t rsa 172.31.17.167 >> ~/.ssh/known_hosts
-
     - name: Deploy to Elastic Beanstalk
       env:
         AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -52,10 +45,6 @@ jobs:
           --no-verify-ssl  
         eb use $ENVIRONMENT_NAME
         eb deploy
-
-    - name: Run Migrations
-      run: |
-        eb ssh $ENVIRONMENT_NAME --command "source /var/app/venv/*/bin/activate && python /var/app/current/manage.py migrate"
 
     - name: Set Environment Variables in Beanstalk
       env:
